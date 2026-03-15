@@ -1,0 +1,14 @@
+# Node
+node_modules/
+dist/
+.next/
+.env
+*.env.local
+
+# Rust
+target/
+Cargo.lock
+
+# OS
+.DS_Store
+*.log
