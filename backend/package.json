@@ -1,7 +1,7 @@
 {
-  "name": "bluecollar-backend",
+  "name": "hubassist-backend",
   "version": "0.1.0",
-  "description": "BlueCollar NestJS REST API",
+  "description": "HubAssist NestJS REST API",
   "scripts": {
     "start:dev": "nest start --watch",
     "build": "nest build",

@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "contracts/bluecollar_hub",
+    "contracts/hubassist_hub",
     "contracts/workspace_booking",
 ]
 resolver = "2"

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'BlueCollar — Workspace Management',
+  title: 'HubAssist — Workspace Management',
   description: 'Coworking and workspace management powered by Stellar',
 };
 

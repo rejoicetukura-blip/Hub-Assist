@@ -2,7 +2,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center gap-6 p-8">
       <h1 className="text-4xl font-bold tracking-tight">
-        BlueCollar <span className="text-blue-400">Hub</span>
+        HubAssist <span className="text-blue-400">Hub</span>
       </h1>
       <p className="text-gray-400 text-center max-w-md">
         A comprehensive coworking and workspace management platform powered by{' '}

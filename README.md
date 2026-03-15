@@ -1,8 +1,8 @@
-# BlueCollar
+# HubAssist
 
 > A Comprehensive Coworking and Workspace Management System — powered by [Stellar](https://stellar.org)
 
-BlueCollar is a full-stack monorepo platform designed to streamline **coworking and workspace management** for hubs, shared offices, and enterprise workspaces. It combines a modern web frontend, a robust REST API backend, and on-chain smart contracts deployed on the **Stellar** blockchain via **Soroban** — enabling trustless payments, membership tokens, and access control.
+HubAssist is a full-stack monorepo platform designed to streamline **coworking and workspace management** for hubs, shared offices, and enterprise workspaces. It combines a modern web frontend, a robust REST API backend, and on-chain smart contracts deployed on the **Stellar** blockchain via **Soroban** — enabling trustless payments, membership tokens, and access control.
 
 ---
 
@@ -26,7 +26,7 @@ BlueCollar is a full-stack monorepo platform designed to streamline **coworking 
 
 ## About
 
-BlueCollar handles the everyday operational needs of tech hubs and coworking spaces — from managing members and tracking workspace usage to biometric attendance and on-chain payment escrow. The platform is modular, scalable, and built with real-world enterprise requirements in mind.
+HubAssist handles the everyday operational needs of tech hubs and coworking spaces — from managing members and tracking workspace usage to biometric attendance and on-chain payment escrow. The platform is modular, scalable, and built with real-world enterprise requirements in mind.
 
 This project is built on top of the **Stellar network**, leveraging **Soroban smart contracts** (written in Rust) for:
 - Membership token issuance
@@ -65,7 +65,7 @@ This project is built on top of the **Stellar network**, leveraging **Soroban sm
 ## Monorepo Structure
 
 ```
-bluecollar/
+hubassist/
 ├── backend/                  # NestJS REST API
 │   └── src/
 │       ├── auth/             # JWT auth, biometric login
@@ -82,7 +82,7 @@ bluecollar/
 │   └── providers/            # Context providers
 │
 ├── contracts/                # Soroban smart contracts (Rust)
-│   ├── bluecollar_hub/       # Core hub management contract
+│   ├── hubassist_hub/       # Core hub management contract
 │   ├── workspace_booking/    # Booking + payment escrow
 │   ├── membership_token/     # Membership token (SRC-20 style)
 │   ├── access_control/       # On-chain role management
@@ -125,8 +125,8 @@ cargo install --locked stellar-cli@23.1.3
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/your-org/bluecollar.git
-cd bluecollar
+git clone https://github.com/your-org/hubassist.git
+cd hubassist
 
 # 2. Install frontend dependencies
 cd frontend && npm install
@@ -201,7 +201,7 @@ stellar contract deploy \
 
 | Contract             | Description                                      |
 |----------------------|--------------------------------------------------|
-| `bluecollar_hub`     | Core hub registry and member management          |
+| `hubassist_hub`     | Core hub registry and member management          |
 | `workspace_booking`  | Booking creation, cancellation, payment escrow   |
 | `membership_token`   | Tokenized membership with expiry and tiers       |
 | `access_control`     | On-chain role assignment and permission checks   |
@@ -235,4 +235,4 @@ Please follow the existing code style and architecture patterns in each package.
 
 ## License
 
-MIT © BlueCollar Contributors
+MIT © HubAssist Contributors

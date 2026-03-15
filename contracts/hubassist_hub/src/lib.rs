@@ -16,10 +16,10 @@ pub enum DataKey {
 }
 
 #[contract]
-pub struct BlueCollarHub;
+pub struct HubAssistHub;
 
 #[contractimpl]
-impl BlueCollarHub {
+impl HubAssistHub {
     /// Initialize the hub with an admin address.
     pub fn initialize(env: Env, admin: Address) {
         admin.require_auth();
