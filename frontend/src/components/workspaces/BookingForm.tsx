@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@zod/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Workspace, BookingFormData } from "@/types/workspace";
+import { Workspace } from "@/types/workspace";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/lib/store/authStore";
 import { useToast } from "@/components/ui/ToastProvider";
@@ -62,7 +62,7 @@ export function BookingForm({ workspace, onBookingSuccess }: BookingFormProps) {
       showToast("success", "Booking created successfully");
       form.reset();
       onBookingSuccess?.();
-    } catch (error) {
+    } catch {
       showToast("error", "Failed to create booking");
     } finally {
       setIsBooking(false);

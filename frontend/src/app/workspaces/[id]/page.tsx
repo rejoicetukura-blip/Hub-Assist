@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, Clock, Users, MapPin } from "lucide-react";
-import { Workspace, BookingFormData } from "@/types/workspace";
+import { Workspace } from "@/types/workspace";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/lib/store/authStore";
 import { useToast } from "@/components/ui/ToastProvider";
@@ -48,7 +48,7 @@ function BookingForm({ workspace }: { workspace: Workspace }) {
       });
       showToast("success", "Booking created successfully");
       setFormData({ startTime: "", endTime: "" });
-    } catch (error) {
+    } catch {
       showToast("error", "Failed to create booking");
     } finally {
       setIsBooking(false);

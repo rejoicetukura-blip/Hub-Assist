@@ -2,16 +2,14 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@zod/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Camera, Save, Lock } from "lucide-react";
-import { User } from "@/types/user";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/lib/store/authStore";
 import { useToast } from "@/components/ui/ToastProvider";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
 
 const profileSchema = z.object({
   firstname: z.string().min(1, "First name is required"),
@@ -58,7 +56,7 @@ export default function ProfilePage() {
       await api.updateUser(token, user.id, data);
       updateUser(data);
       showToast("success", "Profile updated successfully");
-    } catch (error) {
+    } catch {
       showToast("error", "Failed to update profile");
     } finally {
       setIsUpdatingProfile(false);
@@ -76,7 +74,7 @@ export default function ProfilePage() {
       });
       showToast("success", "Password changed successfully");
       passwordForm.reset();
-    } catch (error) {
+    } catch {
       showToast("error", "Failed to change password");
     } finally {
       setIsChangingPassword(false);
@@ -101,7 +99,7 @@ export default function ProfilePage() {
       showToast("success", "Profile picture updated successfully");
       setSelectedFile(null);
       setPreviewUrl(null);
-    } catch (error) {
+    } catch {
       showToast("error", "Failed to upload profile picture");
     }
   };

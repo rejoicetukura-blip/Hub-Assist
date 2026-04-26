@@ -36,7 +36,7 @@ export function ResendPassword({ email }: Readonly<{ email: string }>) {
           Resend code in <CountDownTimer key={timerKey} seconds={RESEND_SECONDS} onExpire={handleExpire} />
         </p>
       ) : (
-        <Button type="button" variant="soft" disabled={isPending} onClick={handleResend} className="text-sm">
+        <Button type="button" variant="ghost" disabled={isPending} onClick={handleResend} className="text-sm">
           {isPending ? "Sending…" : "Resend code"}
         </Button>
       )}

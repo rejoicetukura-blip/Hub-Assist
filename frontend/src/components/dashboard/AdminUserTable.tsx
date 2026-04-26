@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Search, MoreHorizontal, Edit, Trash2, UserCheck, UserX } from "lucide-react";
+import { Search, Edit, Trash2, UserCheck, UserX } from "lucide-react";
 import { User, UserRole } from "@/types/user";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/lib/store/authStore";

@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@zod/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Bell, Palette, Wallet, AlertTriangle } from "lucide-react";
-import { UserSettings } from "@/types/user";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/lib/store/authStore";
 import { useToast } from "@/components/ui/ToastProvider";
@@ -93,7 +92,7 @@ export default function SettingsPage() {
       await api.updateUser(token, user.id, { stellarPublicKey: data.stellarPublicKey });
       updateUser({ stellarPublicKey: data.stellarPublicKey });
       showToast("success", "Settings updated successfully");
-    } catch (error) {
+    } catch {
       showToast("error", "Failed to update settings");
     } finally {
       setIsUpdatingSettings(false);
@@ -116,7 +115,7 @@ export default function SettingsPage() {
       showToast("success", "Account deleted successfully");
       // Redirect to home or login
       window.location.href = "/";
-    } catch (error) {
+    } catch {
       showToast("error", "Failed to delete account");
     } finally {
       setIsDeleting(false);

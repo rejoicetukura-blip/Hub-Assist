@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Settings | HubAssist",
@@ -19,9 +20,9 @@ export default function SettingsLayout({
               <ol className="flex items-center space-x-4">
                 <li>
                   <div>
-                    <a href="/" className="text-gray-400 hover:text-gray-500">
+                    <Link href="/" className="text-gray-400 hover:text-gray-500">
                       Home
-                    </a>
+                    </Link>
                   </div>
                 </li>
                 <li>

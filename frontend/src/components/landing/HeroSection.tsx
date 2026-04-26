@@ -23,7 +23,7 @@ export function HeroSection({ content }: Readonly<HeroSectionProps>) {
 
             <div className="flex flex-wrap items-center gap-3">
               <Button>Start for free</Button>
-              <Button variant="soft">See architecture</Button>
+              <Button variant="ghost">See architecture</Button>
             </div>
 
 

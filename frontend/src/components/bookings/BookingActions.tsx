@@ -38,7 +38,7 @@ export function BookingActions({ booking, isAdmin }: Props) {
     <div className="flex gap-2 flex-wrap">
       {isAdmin && isPending && (
         <Button
-          variant="dark"
+          variant="default"
           onClick={() => confirm.mutate()}
           disabled={confirm.isPending}
         >
@@ -47,7 +47,7 @@ export function BookingActions({ booking, isAdmin }: Props) {
       )}
       {isCancellable && (
         <Button
-          variant="soft"
+          variant="ghost"
           onClick={() => cancel.mutate()}
           disabled={cancel.isPending}
         >

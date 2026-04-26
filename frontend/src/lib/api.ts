@@ -1,4 +1,29 @@
+import { Workspace } from '@/types/workspace';
+import { User } from '@/types/user';
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+
+export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
+
+export interface Booking {
+  id: string;
+  workspaceName: string;
+  memberName?: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  amount: number;
+  status: BookingStatus;
+}
+
+export interface AttendanceRecord {
+  id: string;
+  userId?: string;
+  memberName?: string;
+  clockIn: string;
+  clockOut?: string;
+  date: string;
+}
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
@@ -22,6 +47,31 @@ export const api = {
       body: JSON.stringify(data),
     }),
 
+  forgotPassword: (email: string) =>
+    request<{ message: string }>('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    }),
+
+  resetPassword: (email: string, otp: string, newPassword: string) =>
+    request<{ message: string }>('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({ email, otp, newPassword }),
+    }),
+
+  verifyOtp: (email: string, otp: string) =>
+    request<{ access_token: string }>('/auth/verify-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email, otp }),
+    }),
+
+  resendOtp: (email: string) =>
+    request<{ message: string }>('/auth/resend-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    }),
+
+  // Users
   getUsers: (token: string, params?: { page?: number; limit?: number; search?: string; role?: string }) => {
     const queryParams = new URLSearchParams();
     if (params?.page) queryParams.append('page', params.page.toString());
@@ -29,9 +79,10 @@ export const api = {
     if (params?.search) queryParams.append('search', params.search);
     if (params?.role) queryParams.append('role', params.role);
     const query = queryParams.toString();
-    return request<{ users: any[]; total: number; page: number; totalPages: number }>(`/users${query ? `?${query}` : ''}`, {
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    });
+    return request<{ users: User[]; total: number; page: number; totalPages: number }>(
+      `/users${query ? `?${query}` : ''}`,
+      { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } },
+    );
   },
 
   updateUser: (token: string, userId: string, data: { firstname?: string; lastname?: string; stellarPublicKey?: string }) =>
@@ -75,7 +126,7 @@ export const api = {
       body: formData,
     }).then(res => {
       if (!res.ok) throw new Error('Upload failed');
-      return res.json();
+      return res.json() as Promise<{ avatarUrl: string }>;
     });
   },
 
@@ -86,6 +137,7 @@ export const api = {
       body: JSON.stringify(data),
     }),
 
+  // Workspaces
   getWorkspaces: (params?: { type?: string; availability?: boolean; minPrice?: number; maxPrice?: number }) => {
     const queryParams = new URLSearchParams();
     if (params?.type) queryParams.append('type', params.type);
@@ -93,73 +145,20 @@ export const api = {
     if (params?.minPrice) queryParams.append('minPrice', params.minPrice.toString());
     if (params?.maxPrice) queryParams.append('maxPrice', params.maxPrice.toString());
     const query = queryParams.toString();
-    return request<any[]>(`/workspaces${query ? `?${query}` : ''}`);
+    return request<{ workspaces: Workspace[] }>(`/workspaces${query ? `?${query}` : ''}`);
   },
 
   getWorkspace: (workspaceId: string) =>
-    request<any>(`/workspaces/${workspaceId}`),
+    request<{ workspace: Workspace }>(`/workspaces/${workspaceId}`),
 
+  // Bookings
   createBooking: (token: string, data: { workspaceId: string; startTime: string; endTime: string }) =>
-    request<{ booking: any; message: string }>(`/bookings`, {
+    request<{ booking: Booking; message: string }>(`/bookings`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     }),
 
-  getBookings: (token: string) =>
-    request<any[]>(`/bookings`, {
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    }),
-
-  getDashboardStats: (token: string) =>
-    request<{
-      totalMembers: number;
-      verifiedMembers: number;
-      activeWorkspaces: number;
-      deskOccupancy: number;
-      pendingBookings?: number;
-      revenueThisMonth?: number;
-    }>('/dashboard/stats', {
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    }),
-
-  getDashboardActivity: (token: string) =>
-    request<Array<{ id: string; icon: string; description: string; timestamp: string }>>(
-      '/dashboard/activity',
-      { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } },
-    ),
-
-  getDashboardGrowth: (token: string) =>
-    request<Array<{ date: string; members: number }>>(
-      '/dashboard/growth',
-      { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } },
-    ),
-
-  forgotPassword: (email: string) =>
-    request<{ message: string }>('/auth/forgot-password', {
-      method: 'POST',
-      body: JSON.stringify({ email }),
-    }),
-
-  resetPassword: (email: string, otp: string, newPassword: string) =>
-    request<{ message: string }>('/auth/reset-password', {
-      method: 'POST',
-      body: JSON.stringify({ email, otp, newPassword }),
-    }),
-
-  verifyOtp: (email: string, otp: string) =>
-    request<{ access_token: string }>('/auth/verify-otp', {
-      method: 'POST',
-      body: JSON.stringify({ email, otp }),
-    }),
-
-  resendOtp: (email: string) =>
-    request<{ message: string }>('/auth/resend-otp', {
-      method: 'POST',
-      body: JSON.stringify({ email }),
-    }),
-
-  // Bookings
   getBookings: (token: string, status?: string) =>
     request<Booking[]>(`/bookings${status ? `?status=${status}` : ''}`, {
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -199,26 +198,29 @@ export const api = {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     }),
+
+  // Dashboard
+  getDashboardStats: (token: string) =>
+    request<{
+      totalMembers: number;
+      verifiedMembers: number;
+      activeWorkspaces: number;
+      deskOccupancy: number;
+      pendingBookings?: number;
+      revenueThisMonth?: number;
+    }>('/dashboard/stats', {
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    }),
+
+  getDashboardActivity: (token: string) =>
+    request<Array<{ id: string; icon: string; description: string; timestamp: string }>>(
+      '/dashboard/activity',
+      { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } },
+    ),
+
+  getDashboardGrowth: (token: string) =>
+    request<Array<{ date: string; members: number }>>(
+      '/dashboard/growth',
+      { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } },
+    ),
 };
-
-export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
-
-export interface Booking {
-  id: string;
-  workspaceName: string;
-  memberName?: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  amount: number;
-  status: BookingStatus;
-}
-
-export interface AttendanceRecord {
-  id: string;
-  userId?: string;
-  memberName?: string;
-  clockIn: string;
-  clockOut?: string;
-  date: string;
-}

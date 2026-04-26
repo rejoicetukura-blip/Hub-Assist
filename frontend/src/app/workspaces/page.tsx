@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Filter } from "lucide-react";
-import { Workspace, WorkspaceType, WorkspaceFilters } from "@/types/workspace";
+import type { Workspace, WorkspaceType, WorkspaceFilters } from "@/types/workspace";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
