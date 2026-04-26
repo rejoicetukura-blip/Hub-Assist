@@ -2,6 +2,7 @@
 members = [
     "contracts/hubassist_hub",
     "contracts/workspace_booking",
+    "contracts/payment_escrow",
 ]
 resolver = "2"
 
