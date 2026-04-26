@@ -21,3 +21,8 @@ body {
   color: var(--text);
   font-family: "Funnel Sans", "Inter", system-ui, -apple-system, sans-serif;
 }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}

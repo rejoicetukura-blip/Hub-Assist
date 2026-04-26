@@ -6,19 +6,26 @@ interface TrustedBySectionProps {
 }
 
 export function TrustedBySection({ companies }: Readonly<TrustedBySectionProps>) {
+  const items = [...companies, ...companies]; // duplicate for seamless loop
+
   return (
     <LandingSection id="trusted-by">
       <div className="space-y-6">
         <SectionHeading eyebrow="TRUSTED BY" title="Growing teams and enterprise hubs rely on Hubassist." />
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {companies.map((company) => (
-            <div
-              key={company}
-              className="rounded-2xl bg-[#F8F3ED] px-4 py-5 text-center text-sm font-medium text-[#3D3D3D] transition hover:bg-white"
-            >
-              {company}
-            </div>
-          ))}
+        <div className="overflow-hidden">
+          <div
+            className="flex gap-3"
+            style={{ animation: "marquee 12s linear infinite", width: "max-content" }}
+          >
+            {items.map((company, i) => (
+              <div
+                key={i}
+                className="rounded-2xl bg-[#F8F3ED] px-8 py-5 text-sm font-medium text-[#3D3D3D] whitespace-nowrap transition hover:bg-white"
+              >
+                {company}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </LandingSection>
