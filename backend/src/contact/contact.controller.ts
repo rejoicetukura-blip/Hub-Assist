@@ -22,7 +22,7 @@ export class ContactController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async submitContact(@Body() dto: SubmitContactDto, @Req() req: Request) {
-    const ipAddress = req.ip || req.socket.remoteAddress;
+    const ipAddress = (req.ip || req.socket.remoteAddress || 'unknown') as string;
     return this.contactService.submitContact(dto, ipAddress);
   }
 

@@ -4,18 +4,18 @@ export class SubmitContactDto {
   @IsString()
   @MinLength(2)
   @MaxLength(100)
-  fullName: string;
+  fullName!: string;
 
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsString()
   @MinLength(3)
   @MaxLength(200)
-  subject: string;
+  subject!: string;
 
   @IsString()
   @MinLength(10)
   @MaxLength(5000)
-  message: string;
+  message!: string;
 }

@@ -1,8 +1,8 @@
-import { Repository } from 'typeorm';
+import { Repository, ObjectLiteral } from 'typeorm';
 import { PaginationQueryDto } from '../dto/pagination-query.dto';
 import { PaginatedResponse } from '../interface/paginated-response.interface';
 
-export async function paginate<T>(
+export async function paginate<T extends ObjectLiteral>(
   query: PaginationQueryDto,
   repository: Repository<T>,
   options?: { where?: any; order?: any },

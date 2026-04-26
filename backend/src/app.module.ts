@@ -18,8 +18,10 @@ import { HttpLoggerMiddleware } from './common/middlewares/http-logger.middlewar
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) =>
-        configService.get('database'),
+      useFactory: (configService: ConfigService) => {
+        const config = configService.get('database');
+        return config || {};
+      },
     }),
     AuthModule,
     UsersModule,

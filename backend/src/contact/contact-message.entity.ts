@@ -3,23 +3,23 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeor
 @Entity('contact_messages')
 export class ContactMessage {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  fullName: string;
+  fullName!: string;
 
   @Column()
-  email: string;
+  email!: string;
 
   @Column()
-  subject: string;
+  subject!: string;
 
   @Column('text')
-  message: string;
+  message!: string;
 
   @Column({ nullable: true })
-  ipAddress: string;
+  ipAddress?: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 }

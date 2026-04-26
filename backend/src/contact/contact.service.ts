@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { ContactMessage } from './contact-message.entity';
 import { SubmitContactDto } from './dto/submit-contact.dto';
 import { PaginationQueryDto } from '../common/pagination/dto/pagination-query.dto';
-import { paginate } from '../common/pagination/paginate.util';
+import { paginate } from '../common/pagination/utils/paginate.util';
 import { PaginatedResponse } from '../common/pagination/interface/paginated-response.interface';
 
 @Injectable()
