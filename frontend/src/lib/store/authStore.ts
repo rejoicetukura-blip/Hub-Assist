@@ -1,37 +1,25 @@
 import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import { useShallow } from 'zustand/react/shallow';
-
-export type UserRole = 'admin' | 'member' | 'staff';
-
-export interface User {
-  id: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-  role: UserRole;
-}
-import { create } from "zustand/react";
-import { User, UserSettings } from "@/types/user";
+import { User, UserSettings } from '@/types/user';
 
 interface AuthState {
   user: User | null;
   accessToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  /** @deprecated use accessToken */
+  token: string | null;
+  settings: UserSettings | null;
 }
 
 interface AuthActions {
   setToken: (token: string) => void;
   setUser: (user: User) => void;
-  clearAuth: () => void;
-  /** @deprecated use clearAuth */
-  settings: UserSettings | null;
-  setToken: (token: string) => void;
-  setUser: (user: User) => void;
   setSettings: (settings: UserSettings) => void;
   updateUser: (updates: Partial<User>) => void;
   clear: () => void;
+  clearAuth: () => void;
   initializeAuth: () => void;
   login: (data: { access_token: string; user?: User }) => void;
   register: (data: { access_token: string; user?: User }) => void;
@@ -57,14 +45,21 @@ export const useAuthStore = create<AuthStore>()(
       (set, get) => ({
         user: null,
         accessToken: null,
+        token: null,
         isAuthenticated: false,
         isLoading: false,
+        settings: null,
 
-        setToken: (token) => set({ accessToken: token, isAuthenticated: true }),
+        setToken: (token) => set({ accessToken: token, token, isAuthenticated: true }),
         setUser: (user) => set({ user }),
+        setSettings: (settings) => set({ settings }),
+        updateUser: (updates) => {
+          const currentUser = get().user;
+          if (currentUser) set({ user: { ...currentUser, ...updates } });
+        },
 
         clearAuth: () =>
-          set({ user: null, accessToken: null, isAuthenticated: false }),
+          set({ user: null, accessToken: null, token: null, isAuthenticated: false }),
         clear: () => get().clearAuth(),
 
         initializeAuth: () => {
@@ -79,6 +74,7 @@ export const useAuthStore = create<AuthStore>()(
         login: ({ access_token, user }) =>
           set({
             accessToken: access_token,
+            token: access_token,
             isAuthenticated: true,
             ...(user ? { user } : {}),
           }),
@@ -86,6 +82,7 @@ export const useAuthStore = create<AuthStore>()(
         register: ({ access_token, user }) =>
           set({
             accessToken: access_token,
+            token: access_token,
             isAuthenticated: true,
             ...(user ? { user } : {}),
           }),
@@ -98,12 +95,9 @@ export const useAuthStore = create<AuthStore>()(
         refreshAccessToken: async () => {
           set({ isLoading: true });
           try {
-            // Imported lazily to avoid circular dependency with apiClient
             const { default: apiClient } = await import('@/lib/apiClient');
-            const { data } = await apiClient.post<{ access_token: string }>(
-              '/auth/refresh',
-            );
-            set({ accessToken: data.access_token, isAuthenticated: true });
+            const { data } = await apiClient.post<{ access_token: string }>('/auth/refresh');
+            set({ accessToken: data.access_token, token: data.access_token, isAuthenticated: true });
           } catch {
             get().clearAuth();
           } finally {
@@ -123,7 +117,6 @@ export const useAuthStore = create<AuthStore>()(
   ),
 );
 
-/** Shallow-wrapped selector hook for performance */
 export function useAuthState() {
   return useAuthStore(
     useShallow((s) => ({

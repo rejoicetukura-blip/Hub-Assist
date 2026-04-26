@@ -6,10 +6,21 @@ const apiClient = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+// Lazily resolved store reference to avoid circular dependency
+let _getState: (() => { accessToken: string | null; refreshAccessToken: () => Promise<void>; logout: () => void }) | null = null;
+
+async function getStore() {
+  if (!_getState) {
+    const { useAuthStore } = await import('@/lib/store/authStore');
+    _getState = useAuthStore.getState;
+  }
+  return _getState();
+}
+
 // Request interceptor — attach Bearer token
-apiClient.interceptors.request.use((config) => {
-  const { accessToken } = require('@/lib/store/authStore').useAuthStore.getState();
-  if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
+apiClient.interceptors.request.use(async (config) => {
+  const store = await getStore();
+  if (store.accessToken) config.headers.Authorization = `Bearer ${store.accessToken}`;
   return config;
 });
 
@@ -32,7 +43,6 @@ apiClient.interceptors.response.use(
           original.headers.Authorization = `Bearer ${token}`;
           resolve(apiClient(original));
         });
-        // If refresh ultimately fails, reject queued requests
         refreshQueue.push(() => reject(error));
       });
     }
@@ -41,9 +51,9 @@ apiClient.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const store = require('@/lib/store/authStore').useAuthStore.getState();
+      const store = await getStore();
       await store.refreshAccessToken();
-      const { accessToken } = require('@/lib/store/authStore').useAuthStore.getState();
+      const { accessToken } = await getStore();
       if (!accessToken) throw new Error('No token after refresh');
 
       original.headers.Authorization = `Bearer ${accessToken}`;
@@ -52,7 +62,8 @@ apiClient.interceptors.response.use(
       return apiClient(original);
     } catch {
       refreshQueue = [];
-      require('@/lib/store/authStore').useAuthStore.getState().logout();
+      const store = await getStore();
+      store.logout();
       return Promise.reject(error);
     } finally {
       isRefreshing = false;
