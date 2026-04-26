@@ -125,3 +125,29 @@ pub struct UserAttendanceStats {
     pub date_range: DateRange,
     pub peak_hours: soroban_sdk::Vec<PeakHourData>,
 }
+
+#[contracttype]
+#[derive(Clone, PartialEq)]
+pub enum SubscriptionStatus {
+    Active,
+    Cancelled,
+    Paused,
+    Expired,
+}
+
+#[contracttype]
+#[derive(Clone)]
+pub struct Subscription {
+    pub id: soroban_sdk::BytesN<32>,
+    pub user: soroban_sdk::Address,
+    pub payment_token: soroban_sdk::Address,
+    pub amount: i128,
+    pub status: SubscriptionStatus,
+    pub created_at: u64,
+    pub expires_at: u64,
+    pub tier_id: soroban_sdk::BytesN<32>,
+    pub billing_cycle: u64,
+    pub pause_count: u32,
+    pub paused_at: u64,
+    pub pause_reason: String,
+}
