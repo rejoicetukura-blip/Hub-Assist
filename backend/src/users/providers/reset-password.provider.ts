@@ -1,22 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../user.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class ResetPasswordProvider {
-  async verifyOtp(otp: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(otp, hash);
-  }
+  constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
-  async hashPassword(password: string): Promise<string> {
-    return bcrypt.hash(password, 10);
-  }
-
-  validatePasswordStrength(password: string): boolean {
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumber = /\d/.test(password);
-    const isLongEnough = password.length >= 8;
-
-    return hasUpperCase && hasLowerCase && hasNumber && isLongEnough;
+  async execute(id: string, newPassword: string): Promise<User> {
+    const user = await this.repo.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    user.passwordHash = await bcrypt.hash(newPassword, 10);
+    return this.repo.save(user);
   }
 }

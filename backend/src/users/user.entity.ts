@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, DeleteDateColumn } from 'typeorm';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -9,19 +9,22 @@ export enum UserRole {
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column()
-  passwordHash: string;
+  passwordHash!: string;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.MEMBER })
-  role: UserRole;
+  role!: UserRole;
 
   @Column({ nullable: true })
-  stellarPublicKey: string;
+  stellarPublicKey?: string;
+
+  @Column({ nullable: true })
+  profilePicture?: string;
 
   @Column({ nullable: true })
   firstname: string;
@@ -51,8 +54,8 @@ export class User {
   refreshToken: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

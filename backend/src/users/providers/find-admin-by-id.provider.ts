@@ -1,17 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../user.entity';
-import * as bcrypt from 'bcrypt';
+import { User, UserRole } from '../user.entity';
 
 @Injectable()
-export class ForgotPasswordProvider {
+export class FindAdminByIdProvider {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
-  async execute(email: string): Promise<User> {
-    const user = await this.repo.findOne({ where: { email } });
+  async execute(id: string): Promise<User> {
+    const user = await this.repo.findOne({ where: { id, role: UserRole.ADMIN } });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Admin not found');
     }
     return user;
   }
