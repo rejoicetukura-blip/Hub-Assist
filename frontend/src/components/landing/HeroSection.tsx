@@ -26,11 +26,7 @@ export function HeroSection({ content }: Readonly<HeroSectionProps>) {
               <Button variant="soft">See architecture</Button>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 text-xs text-[#6B6B6B]">
-              <span className="rounded-full bg-[#2A2A2A] px-4 py-2 text-[#F3EBE2] shadow-sm">Hovered</span>
-              <span className="rounded-full border border-[#D4916E] bg-[#E8D7C8] px-4 py-2 text-[#1A1A1A]">Hovered</span>
-              <span>Hover states</span>
-            </div>
+
           </div>
 
           <aside className="space-y-4 rounded-[20px] border border-[#D7CFC6] bg-[#F3EBE2] p-6">
