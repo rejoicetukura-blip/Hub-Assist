@@ -1,9 +1,8 @@
-import { Controller, Get, Post, Patch, Delete, UseGuards, UploadedFile, Param, Body, Query } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, UploadedFile, Param, Body, Query } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FileValidationPipe } from '../common/pipes/file-validation.pipe';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -12,7 +11,6 @@ import { UserRole } from './user.entity';
 @ApiTags('users')
 @ApiBearerAuth()
 @Controller('users')
-@UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
