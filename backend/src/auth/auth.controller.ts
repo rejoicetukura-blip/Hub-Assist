@@ -1,5 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { ResendOtpDto } from './dto/resend-otp.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -13,5 +16,15 @@ export class AuthController {
   @Post('login')
   login(@Body() body: { email: string; password: string }) {
     return this.authService.login(body.email, body.password);
+  }
+
+  @Post('verify-otp')
+  verifyOtp(@Body() dto: VerifyOtpDto) {
+    return this.authService.verifyOtp(dto.email, dto.otp);
+  }
+
+  @Post('resend-otp')
+  resendOtp(@Body() dto: ResendOtpDto) {
+    return this.authService.resendOtp(dto.email);
   }
 }
