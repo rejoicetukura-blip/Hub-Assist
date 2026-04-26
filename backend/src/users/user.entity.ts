@@ -9,25 +9,25 @@ export enum UserRole {
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column()
-  passwordHash: string;
+  passwordHash!: string;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.MEMBER })
-  role: UserRole;
+  role!: UserRole;
 
   @Column({ nullable: true })
-  stellarPublicKey: string;
+  stellarPublicKey?: string;
 
   @Column({ nullable: true })
-  profilePicture: string;
+  profilePicture?: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @DeleteDateColumn()
   deletedAt?: Date;

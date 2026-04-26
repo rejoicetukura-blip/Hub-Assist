@@ -7,7 +7,7 @@ import { User } from '../user.entity';
 export class FindOneUserByEmailProvider {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
-  async execute(email: string): Promise<User> {
+  async execute(email: string): Promise<User | null> {
     return this.repo.findOne({ where: { email } });
   }
 }

@@ -18,7 +18,7 @@ export class CloudinaryService {
         { folder: 'hubassist/profile-pictures' },
         (error, result) => {
           if (error) reject(error);
-          else resolve(result.secure_url);
+          else resolve(result?.secure_url || '');
         },
       );
       upload.end(file.buffer);
