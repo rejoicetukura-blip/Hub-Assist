@@ -22,8 +22,92 @@ export const api = {
       body: JSON.stringify(data),
     }),
 
-  getUsers: (token: string) =>
-    request<unknown[]>('/users', {
+  getUsers: (token: string, params?: { page?: number; limit?: number; search?: string; role?: string }) => {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.search) queryParams.append('search', params.search);
+    if (params?.role) queryParams.append('role', params.role);
+    const query = queryParams.toString();
+    return request<{ users: any[]; total: number; page: number; totalPages: number }>(`/users${query ? `?${query}` : ''}`, {
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    });
+  },
+
+  updateUser: (token: string, userId: string, data: { firstname?: string; lastname?: string; stellarPublicKey?: string }) =>
+    request<{ message: string }>(`/users/${userId}`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    }),
+
+  updateUserRole: (token: string, userId: string, role: string) =>
+    request<{ message: string }>(`/users/${userId}/role`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role }),
+    }),
+
+  deactivateUser: (token: string, userId: string) =>
+    request<{ message: string }>(`/users/${userId}/deactivate`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    }),
+
+  activateUser: (token: string, userId: string) =>
+    request<{ message: string }>(`/users/${userId}/activate`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    }),
+
+  deleteUser: (token: string, userId: string) =>
+    request<{ message: string }>(`/users/${userId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    }),
+
+  uploadProfilePicture: (token: string, userId: string, file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return fetch(`${API_BASE}/users/${userId}/profile-picture`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+    }).then(res => {
+      if (!res.ok) throw new Error('Upload failed');
+      return res.json();
+    });
+  },
+
+  changePassword: (token: string, data: { currentPassword: string; newPassword: string }) =>
+    request<{ message: string }>(`/users/change-password`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    }),
+
+  getWorkspaces: (params?: { type?: string; availability?: boolean; minPrice?: number; maxPrice?: number }) => {
+    const queryParams = new URLSearchParams();
+    if (params?.type) queryParams.append('type', params.type);
+    if (params?.availability !== undefined) queryParams.append('availability', params.availability.toString());
+    if (params?.minPrice) queryParams.append('minPrice', params.minPrice.toString());
+    if (params?.maxPrice) queryParams.append('maxPrice', params.maxPrice.toString());
+    const query = queryParams.toString();
+    return request<any[]>(`/workspaces${query ? `?${query}` : ''}`);
+  },
+
+  getWorkspace: (workspaceId: string) =>
+    request<any>(`/workspaces/${workspaceId}`),
+
+  createBooking: (token: string, data: { workspaceId: string; startTime: string; endTime: string }) =>
+    request<{ booking: any; message: string }>(`/bookings`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    }),
+
+  getBookings: (token: string) =>
+    request<any[]>(`/bookings`, {
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     }),
 
@@ -74,4 +158,67 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ email }),
     }),
+
+  // Bookings
+  getBookings: (token: string, status?: string) =>
+    request<Booking[]>(`/bookings${status ? `?status=${status}` : ''}`, {
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    }),
+
+  getBooking: (token: string, id: string) =>
+    request<Booking>(`/bookings/${id}`, {
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    }),
+
+  confirmBooking: (token: string, id: string) =>
+    request<Booking>(`/bookings/${id}/confirm`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    }),
+
+  cancelBooking: (token: string, id: string) =>
+    request<Booking>(`/bookings/${id}/cancel`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    }),
+
+  // Attendance
+  getAttendance: (token: string, date?: string) =>
+    request<AttendanceRecord[]>(`/attendance${date ? `?date=${date}` : ''}`, {
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    }),
+
+  clockIn: (token: string) =>
+    request<AttendanceRecord>('/attendance/clock-in', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    }),
+
+  clockOut: (token: string) =>
+    request<AttendanceRecord>('/attendance/clock-out', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    }),
 };
+
+export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
+
+export interface Booking {
+  id: string;
+  workspaceName: string;
+  memberName?: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  amount: number;
+  status: BookingStatus;
+}
+
+export interface AttendanceRecord {
+  id: string;
+  userId?: string;
+  memberName?: string;
+  clockIn: string;
+  clockOut?: string;
+  date: string;
+}

@@ -11,6 +11,8 @@ export interface User {
   email: string;
   role: UserRole;
 }
+import { create } from "zustand/react";
+import { User, UserSettings } from "@/types/user";
 
 interface AuthState {
   user: User | null;
@@ -24,6 +26,11 @@ interface AuthActions {
   setUser: (user: User) => void;
   clearAuth: () => void;
   /** @deprecated use clearAuth */
+  settings: UserSettings | null;
+  setToken: (token: string) => void;
+  setUser: (user: User) => void;
+  setSettings: (settings: UserSettings) => void;
+  updateUser: (updates: Partial<User>) => void;
   clear: () => void;
   initializeAuth: () => void;
   login: (data: { access_token: string; user?: User }) => void;
