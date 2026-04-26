@@ -3,6 +3,7 @@ members = [
     "contracts/hubassist_hub",
     "contracts/workspace_booking",
     "contracts/membership_token",
+    "contracts/access_control",
 ]
 resolver = "2"
 
