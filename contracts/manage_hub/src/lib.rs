@@ -6,6 +6,7 @@ mod membership_token;
 mod rewards;
 mod subscription;
 mod staking;
+mod tier_management;
 mod validation;
 
 pub use attendance_log::{
@@ -20,4 +21,5 @@ pub use membership_token::{
 pub use rewards::{RewardsModule, RewardsModuleClient, StakingError};
 pub use subscription::{SubscriptionModule, SubscriptionModuleClient};
 pub use staking::{StakeInfo, StakingConfig, StakingModule, StakingModuleClient, StakingTier};
+pub use tier_management::{TierManagementModule, TierManagementModuleClient, TierUpdate};
 pub use validation::{BatchError, BatchValidator};
