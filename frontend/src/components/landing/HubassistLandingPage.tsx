@@ -13,11 +13,11 @@ export function HubassistLandingPage() {
         <HeroSection content={landingContent} />
         <FeaturesSection title={landingContent.featureTitle} features={landingContent.features} />
         <HowItWorksSection title={landingContent.howItWorksTitle} steps={landingContent.steps} />
+        <TrustedBySection companies={landingContent.trustedBy} />
         <NewsletterSection
           title={landingContent.newsletterTitle}
           description={landingContent.newsletterDescription}
         />
-        <TrustedBySection companies={landingContent.trustedBy} />
         <FooterSection brand={landingContent.brand} />
       </div>
     </main>
