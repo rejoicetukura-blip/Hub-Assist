@@ -26,4 +26,28 @@ export const api = {
     request<unknown[]>('/users', {
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     }),
+
+  getDashboardStats: (token: string) =>
+    request<{
+      totalMembers: number;
+      verifiedMembers: number;
+      activeWorkspaces: number;
+      deskOccupancy: number;
+      pendingBookings?: number;
+      revenueThisMonth?: number;
+    }>('/dashboard/stats', {
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    }),
+
+  getDashboardActivity: (token: string) =>
+    request<Array<{ id: string; icon: string; description: string; timestamp: string }>>(
+      '/dashboard/activity',
+      { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } },
+    ),
+
+  getDashboardGrowth: (token: string) =>
+    request<Array<{ date: string; members: number }>>(
+      '/dashboard/growth',
+      { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } },
+    ),
 };
