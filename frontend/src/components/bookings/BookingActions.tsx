@@ -38,7 +38,7 @@ export function BookingActions({ booking, isAdmin }: Props) {
     <div className="flex gap-2 flex-wrap">
       {isAdmin && isPending && (
         <Button
-          variant="default"
+          variant="primary"
           onClick={() => confirm.mutate()}
           disabled={confirm.isPending}
         >
