@@ -1,9 +1,10 @@
 import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { randomBytes } from 'crypto';
+import { randomBytes, randomUUID } from 'crypto';
 import { UsersService } from '../users/users.service';
 import { EmailService } from './email.service';
+import { RefreshTokenRepository } from './refresh-token.repository';
 
 @Injectable()
 export class AuthService {
@@ -11,6 +12,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private emailService: EmailService,
+    private refreshTokenRepository: RefreshTokenRepository,
   ) {}
 
   private generateOtp(): string {
@@ -23,6 +25,14 @@ export class AuthService {
 
   private async verifyOtp(otp: string, hash: string): Promise<boolean> {
     return bcrypt.compare(otp, hash);
+  }
+
+  private generateRefreshToken(): string {
+    return randomUUID();
+  }
+
+  private async hashRefreshToken(token: string): Promise<string> {
+    return bcrypt.hash(token, 10);
   }
 
   async register(email: string, password: string) {
@@ -111,10 +121,52 @@ export class AuthService {
       throw new UnauthorizedException('Please verify your email first');
     }
 
-    return this.signToken(user.id, user.email, user.role);
+    const refreshToken = this.generateRefreshToken();
+    const refreshTokenHash = await this.hashRefreshToken(refreshToken);
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+    await this.refreshTokenRepository.create(user.id, refreshTokenHash, expiresAt);
+
+    return {
+      access_token: this.jwtService.sign({ sub: user.id, email: user.email, role: user.role }),
+      refresh_token: refreshToken,
+    };
   }
 
-  private signToken(id: string, email: string, role: string) {
-    return { access_token: this.jwtService.sign({ sub: id, email, role }) };
+  async refresh(refreshToken: string) {
+    const tokenRecord = await this.refreshTokenRepository.findByToken(refreshToken);
+
+    if (!tokenRecord || tokenRecord.isRevoked) {
+      throw new UnauthorizedException('Invalid or revoked refresh token');
+    }
+
+    if (new Date() > tokenRecord.expiresAt) {
+      throw new UnauthorizedException('Refresh token has expired');
+    }
+
+    const user = await this.usersService.findById(tokenRecord.userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    // Revoke old token
+    await this.refreshTokenRepository.revokeToken(tokenRecord.id);
+
+    // Issue new refresh token
+    const newRefreshToken = this.generateRefreshToken();
+    const newRefreshTokenHash = await this.hashRefreshToken(newRefreshToken);
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+    await this.refreshTokenRepository.create(user.id, newRefreshTokenHash, expiresAt);
+
+    return {
+      access_token: this.jwtService.sign({ sub: user.id, email: user.email, role: user.role }),
+      refresh_token: newRefreshToken,
+    };
+  }
+
+  async logout(userId: string) {
+    await this.refreshTokenRepository.revokeAllUserTokens(userId);
+    return { message: 'Logged out successfully' };
   }
 }
