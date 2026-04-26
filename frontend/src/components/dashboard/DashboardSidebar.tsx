@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store/authStore";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: "⊞" },
@@ -31,15 +32,18 @@ export function DashboardSidebar({ onClose }: Readonly<Props>) {
   const links = NAV.filter((n) => !("adminOnly" in n && n.adminOnly && user?.role !== "admin"));
 
   return (
-    <aside className="flex h-full w-64 flex-col bg-[#F3EBE2] border-r border-[#D7CFC6]">
+    <aside className="flex h-full w-64 flex-col bg-card border-r border-text/10">
       {/* Logo */}
-      <div className="flex items-center justify-between px-6 py-5 border-b border-[#D7CFC6]">
-        <span className="text-lg font-semibold text-[#1A1A1A]">Hubassist</span>
-        {onClose && (
-          <button onClick={onClose} aria-label="Close menu" className="text-[#6B6B6B] hover:text-[#1A1A1A] lg:hidden">
-            ✕
-          </button>
-        )}
+      <div className="flex items-center justify-between px-6 py-5 border-b border-text/10">
+        <span className="text-lg font-semibold text-text">Hubassist</span>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          {onClose && (
+            <button onClick={onClose} aria-label="Close menu" className="text-text-tertiary hover:text-text lg:hidden">
+              ✕
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Nav */}
@@ -53,8 +57,8 @@ export function DashboardSidebar({ onClose }: Readonly<Props>) {
               onClick={onClose}
               className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
                 active
-                  ? "bg-[#1A1A1A] text-[#F3EBE2]"
-                  : "text-[#3D3D3D] hover:bg-[#EDE2D6]"
+                  ? "bg-text text-canvas"
+                  : "text-text-secondary hover:bg-text/5"
               }`}
             >
               <span className="text-base leading-none">{icon}</span>
@@ -65,18 +69,18 @@ export function DashboardSidebar({ onClose }: Readonly<Props>) {
       </nav>
 
       {/* User + Logout */}
-      <div className="border-t border-[#D7CFC6] px-4 py-4 flex items-center gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#D5DCBA] text-sm font-semibold text-[#1A1A1A]">
+      <div className="border-t border-text/10 px-4 py-4 flex items-center gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sage text-sm font-semibold text-text">
           {user?.firstname?.[0]?.toUpperCase() ?? "?"}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="truncate text-sm font-medium text-[#1A1A1A]">{user?.firstname ?? "User"}</p>
-          <p className="truncate text-xs capitalize text-[#6B6B6B]">{user?.role ?? "member"}</p>
+          <p className="truncate text-sm font-medium text-text">{user?.firstname ?? "User"}</p>
+          <p className="truncate text-xs capitalize text-text-tertiary">{user?.role ?? "member"}</p>
         </div>
         <button
           onClick={handleLogout}
           aria-label="Log out"
-          className="shrink-0 rounded-lg p-1.5 text-[#6B6B6B] hover:bg-[#EDE2D6] hover:text-[#1A1A1A] transition-colors"
+          className="shrink-0 rounded-lg p-1.5 text-text-tertiary hover:bg-text/5 hover:text-text transition-colors"
         >
           ↩
         </button>
