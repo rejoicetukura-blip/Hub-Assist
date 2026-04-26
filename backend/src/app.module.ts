@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { ContactModule } from './contact/contact.module';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import { validationSchema } from './config/validation.schema';
@@ -22,6 +23,7 @@ import { HttpLoggerMiddleware } from './common/middlewares/http-logger.middlewar
     }),
     AuthModule,
     UsersModule,
+    ContactModule,
   ],
 })
 export class AppModule implements NestModule {
