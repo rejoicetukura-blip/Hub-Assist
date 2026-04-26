@@ -5,6 +5,8 @@ import { randomBytes, randomUUID } from 'crypto';
 import { UsersService } from '../users/users.service';
 import { EmailService } from './email.service';
 import { RefreshTokenRepository } from './refresh-token.repository';
+import { ForgotPasswordProvider } from '../users/providers/forgot-password.provider';
+import { ResetPasswordProvider } from '../users/providers/reset-password.provider';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +15,8 @@ export class AuthService {
     private jwtService: JwtService,
     private emailService: EmailService,
     private refreshTokenRepository: RefreshTokenRepository,
+    private forgotPasswordProvider: ForgotPasswordProvider,
+    private resetPasswordProvider: ResetPasswordProvider,
   ) {}
 
   private generateOtp(): string {
@@ -168,5 +172,71 @@ export class AuthService {
   async logout(userId: string) {
     await this.refreshTokenRepository.revokeAllUserTokens(userId);
     return { message: 'Logged out successfully' };
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.usersService.findByEmail(email);
+
+    // Always return generic success message to prevent enumeration
+    const response = { message: 'If an account exists, a password reset OTP has been sent to the email.' };
+
+    if (!user) {
+      return response;
+    }
+
+    const otp = this.forgotPasswordProvider.generateOtp();
+    const otpHash = await this.forgotPasswordProvider.hashOtp(otp);
+    const otpExpiry = this.forgotPasswordProvider.getOtpExpiry();
+
+    await this.usersService.update(user.id, {
+      otp: otpHash,
+      otpExpiry,
+    });
+
+    this.emailService.sendPasswordResetOtp(email, otp).catch(err => {
+      console.error('Failed to send password reset OTP:', err);
+    });
+
+    return response;
+  }
+
+  async resetPassword(email: string, otp: string, newPassword: string) {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    if (!user.otp || !user.otpExpiry) {
+      throw new BadRequestException('No password reset request found');
+    }
+
+    if (new Date() > user.otpExpiry) {
+      throw new BadRequestException('OTP has expired');
+    }
+
+    const isValid = await this.resetPasswordProvider.verifyOtp(otp, user.otp);
+    if (!isValid) {
+      throw new BadRequestException('Invalid OTP');
+    }
+
+    if (!this.resetPasswordProvider.validatePasswordStrength(newPassword)) {
+      throw new BadRequestException(
+        'Password must be at least 8 characters and contain uppercase, lowercase, and numbers',
+      );
+    }
+
+    const passwordHash = await this.resetPasswordProvider.hashPassword(newPassword);
+
+    await this.usersService.update(user.id, {
+      passwordHash,
+      otp: null,
+      otpExpiry: null,
+    });
+
+    this.emailService.sendPasswordResetSuccess(email).catch(err => {
+      console.error('Failed to send password reset success email:', err);
+    });
+
+    return { message: 'Password reset successfully' };
   }
 }

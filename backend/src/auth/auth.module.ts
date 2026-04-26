@@ -9,6 +9,8 @@ import { JwtStrategy } from './jwt.strategy';
 import { EmailService } from './email.service';
 import { RefreshToken } from './refresh-token.entity';
 import { RefreshTokenRepository } from './refresh-token.repository';
+import { ForgotPasswordProvider } from '../users/providers/forgot-password.provider';
+import { ResetPasswordProvider } from '../users/providers/reset-password.provider';
 
 @Module({
   imports: [
@@ -20,7 +22,14 @@ import { RefreshTokenRepository } from './refresh-token.repository';
       signOptions: { expiresIn: '7d' },
     }),
   ],
-  providers: [AuthService, JwtStrategy, EmailService, RefreshTokenRepository],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    EmailService,
+    RefreshTokenRepository,
+    ForgotPasswordProvider,
+    ResetPasswordProvider,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}
