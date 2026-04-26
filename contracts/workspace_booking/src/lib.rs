@@ -2,10 +2,15 @@
 
 mod errors;
 mod types;
+#[cfg(test)]
+mod test;
 
-use errors::ContractError;
+pub(crate) use errors::ContractError;
+pub(crate) use types::{
+    Booking, BookingStatus, UnavailabilityReason, Workspace, WorkspaceAvailability, WorkspaceType,
+};
+
 use soroban_sdk::{contract, contractimpl, contracttype, symbol_short, vec, Address, BytesN, Env, String, Vec};
-use types::{Booking, BookingStatus, Workspace, WorkspaceAvailability, WorkspaceType};
 
 const LEDGER_TTL: u32 = 535_680; // ~1 year
 
