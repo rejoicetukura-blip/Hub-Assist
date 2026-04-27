@@ -8,6 +8,10 @@ mod subscription;
 mod staking;
 mod tier_management;
 mod validation;
+mod upgrade;
+mod upgrade_errors;
+mod migration;
+mod pause_errors;
 
 pub use attendance_log::{
     AttendanceAction, AttendanceLog, AttendanceLogModule, AttendanceLogModuleClient,
@@ -23,3 +27,7 @@ pub use subscription::{SubscriptionModule, SubscriptionModuleClient};
 pub use staking::{StakeInfo, StakingConfig, StakingModule, StakingModuleClient, StakingTier};
 pub use tier_management::{TierManagementModule, TierManagementModuleClient, TierUpdate};
 pub use validation::{BatchError, BatchValidator};
+pub use upgrade::{UpgradeModule, UpgradeModuleClient};
+pub use upgrade_errors::UpgradeError;
+pub use migration::{MigrationModule, MigrationModuleClient};
+pub use pause_errors::PauseError;
