@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { useAuthStore } from "@/lib/store/authStore";
 import { storage } from "@/lib/storage";
 import type { User, UserSettings } from "@/types/user";
@@ -28,9 +29,11 @@ export function useAuthInit() {
   }, [initializeAuth, setUser, setSettings]);
 
   // Return auth state for convenience
-  return useAuthStore((state) => ({
-    user: state.user,
-    isAuthenticated: state.isAuthenticated,
-    isLoading: state.isLoading,
-  }));
+  return useAuthStore(
+    useShallow((state) => ({
+      user: state.user,
+      isAuthenticated: state.isAuthenticated,
+      isLoading: state.isLoading,
+    }))
+  );
 }
