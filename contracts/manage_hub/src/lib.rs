@@ -12,6 +12,9 @@ mod upgrade;
 mod upgrade_errors;
 mod migration;
 mod pause_errors;
+mod guards;
+mod fractionalization;
+mod royalty;
 
 pub use attendance_log::{
     AttendanceAction, AttendanceLog, AttendanceLogModule, AttendanceLogModuleClient,
@@ -31,3 +34,6 @@ pub use upgrade::{UpgradeModule, UpgradeModuleClient};
 pub use upgrade_errors::UpgradeError;
 pub use migration::{MigrationModule, MigrationModuleClient};
 pub use pause_errors::PauseError;
+pub use guards::{require_admin, require_not_paused, require_usdc_set, validate_expiry_date, validate_payment, GuardError};
+pub use fractionalization::{FractionalizationModule, FractionalizationError};
+pub use royalty::RoyaltyModule;
