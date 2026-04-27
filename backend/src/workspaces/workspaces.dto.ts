@@ -1,7 +1,9 @@
 import { IsString, IsEnum, IsNumber, IsOptional, IsArray, IsBoolean } from 'class-validator';
+import { SanitizeString } from '../common/transformers/sanitize-string.transformer';
 import { WorkspaceType, WorkspaceAvailability } from './workspace.entity';
 
 export class CreateWorkspaceDto {
+  @SanitizeString()
   @IsString()
   name: string;
 
@@ -18,6 +20,7 @@ export class CreateWorkspaceDto {
   availability: WorkspaceAvailability;
 
   @IsOptional()
+  @SanitizeString()
   @IsString()
   description?: string;
 
@@ -28,6 +31,7 @@ export class CreateWorkspaceDto {
 
 export class UpdateWorkspaceDto {
   @IsOptional()
+  @SanitizeString()
   @IsString()
   name?: string;
 
@@ -48,6 +52,7 @@ export class UpdateWorkspaceDto {
   availability?: WorkspaceAvailability;
 
   @IsOptional()
+  @SanitizeString()
   @IsString()
   description?: string;
 

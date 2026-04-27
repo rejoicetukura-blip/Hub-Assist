@@ -1,7 +1,9 @@
 import { IsString, IsDateString, IsNumber, IsOptional, IsEnum } from 'class-validator';
+import { SanitizeString } from '../common/transformers/sanitize-string.transformer';
 import { BookingStatus } from './booking.entity';
 
 export class CreateBookingDto {
+  @SanitizeString()
   @IsString()
   workspaceId: string;
 
@@ -21,6 +23,7 @@ export class UpdateBookingDto {
   status?: BookingStatus;
 
   @IsOptional()
+  @SanitizeString()
   @IsString()
   stellarTxHash?: string;
 }
