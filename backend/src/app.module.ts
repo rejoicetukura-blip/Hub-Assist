@@ -5,6 +5,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ContactModule } from './contact/contact.module';
+import { AttendanceModule } from './attendance/attendance.module';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import { validationSchema } from './config/validation.schema';
@@ -27,6 +28,7 @@ import { HttpLoggerMiddleware } from './common/middlewares/http-logger.middlewar
     AuthModule,
     UsersModule,
     ContactModule,
+    AttendanceModule,
   ],
 })
 export class AppModule implements NestModule {
