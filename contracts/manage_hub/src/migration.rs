@@ -8,22 +8,19 @@ pub struct MigrationModule;
 impl MigrationModule {
     pub fn migrate_v1_to_v2(env: Env, admin: soroban_sdk::Address) -> Result<(), UpgradeError> {
         admin.require_auth();
-        
+
         let version_key = soroban_sdk::symbol_short!("version");
         let current_version: u32 = env.storage()
             .persistent()
             .get(&version_key)
-            .unwrap_or(Ok(1))
-            .unwrap_or(1);
-        
+            .unwrap_or(1u32);
+
         if current_version >= 2 {
             return Ok(());
         }
-        
-        // Transform data from v1 to v2 format
-        // This is a placeholder for actual migration logic
+
         env.storage().persistent().set(&version_key, &2u32);
-        
+
         Ok(())
     }
 
@@ -32,7 +29,6 @@ impl MigrationModule {
         env.storage()
             .persistent()
             .get(&version_key)
-            .unwrap_or(Ok(1))
-            .unwrap_or(1)
+            .unwrap_or(1u32)
     }
 }
