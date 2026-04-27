@@ -41,3 +41,31 @@ export interface NotificationSettings {
 export interface UserSettings extends NotificationSettings {
   theme: "light" | "dark" | "system";
 }
+
+// Auth-related types
+export interface AuthState {
+  user: User | null;
+  accessToken: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  settings: UserSettings | null;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  user?: User;
+  message?: string;
+}
+
+export interface LoginUser {
+  email: string;
+  password: string;
+}
+
+export interface RegisterUser {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
