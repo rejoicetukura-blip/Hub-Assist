@@ -34,7 +34,7 @@ export class AttendanceController {
       },
     },
   })
-  async clockIn(@Request() req, @Body() dto: ClockInDto) {
+  async clockIn(@Request() req: any, @Body() dto: ClockInDto) {
     return this.attendanceService.clockIn(req.user.sub, dto);
   }
 
@@ -53,7 +53,7 @@ export class AttendanceController {
       },
     },
   })
-  async clockOut(@Request() req, @Body() dto: ClockOutDto) {
+  async clockOut(@Request() req: any, @Body() dto: ClockOutDto) {
     return this.attendanceService.clockOut(req.user.sub, dto);
   }
 
@@ -66,7 +66,7 @@ export class AttendanceController {
     description: 'Attendance history retrieved successfully',
   })
   async getMyAttendance(
-    @Request() req,
+    @Request() req: any,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 20,
   ) {
