@@ -2,10 +2,18 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://hubassist.io";
+
 export const metadata: Metadata = {
-  title: "HubAssist — Workspace Management",
-  description:
-    "HubAssist is a full-stack monorepo platform for coworking and workspace management with web, API, and Soroban smart contracts.",
+  title: { default: "HubAssist — Workspace Management", template: "%s | HubAssist" },
+  description: "HubAssist is a full-stack coworking and workspace management platform powered by Stellar.",
+  openGraph: {
+    siteName: "HubAssist",
+    type: "website",
+    images: [{ url: `${BASE_URL}/og-image.png` }],
+  },
+  twitter: { card: "summary_large_image", images: [`${BASE_URL}/og-image.png`] },
+  metadataBase: new URL(BASE_URL),
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
