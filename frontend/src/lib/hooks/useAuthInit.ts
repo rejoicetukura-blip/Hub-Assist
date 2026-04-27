@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useAuthStore } from "@/lib/store/authStore";
 import { storage } from "@/lib/storage";
+import type { User, UserSettings } from "@/types/user";
 
 /**
  * Hook that initializes auth state from storage on app mount
@@ -14,8 +15,8 @@ export function useAuthInit() {
     initializeAuth();
 
     // Load additional user data from storage if available
-    const storedUser = storage.get("user");
-    const storedSettings = storage.get("user-settings");
+    const storedUser = storage.get<User>("user");
+    const storedSettings = storage.get<UserSettings>("user-settings");
 
     if (storedUser) {
       setUser(storedUser);

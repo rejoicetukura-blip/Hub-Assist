@@ -3,9 +3,9 @@
  */
 
 export interface StorageOptions {
-  defaultValue?: any;
-  serialize?: (value: any) => string;
-  deserialize?: (value: string) => any;
+  defaultValue?: unknown;
+  serialize?: (value: unknown) => string;
+  deserialize?: (value: string) => unknown;
 }
 
 class Storage {
@@ -14,29 +14,29 @@ class Storage {
   /**
    * Get a value from localStorage
    */
-  get<T = any>(key: string, options: StorageOptions = {}): T | null {
+  get<T = unknown>(key: string, options: StorageOptions = {}): T | null {
     if (!this.isClient) {
-      return options.defaultValue ?? null;
+      return (options.defaultValue as T) ?? null;
     }
 
     try {
       const item = window.localStorage.getItem(key);
       if (item === null) {
-        return options.defaultValue ?? null;
+        return (options.defaultValue as T) ?? null;
       }
 
       const deserialize = options.deserialize || JSON.parse;
-      return deserialize(item);
+      return deserialize(item) as T;
     } catch (error) {
       console.warn(`Error reading localStorage key "${key}":`, error);
-      return options.defaultValue ?? null;
+      return (options.defaultValue as T) ?? null;
     }
   }
 
   /**
    * Set a value in localStorage
    */
-  set<T = any>(key: string, value: T, options: StorageOptions = {}): boolean {
+  set<T = unknown>(key: string, value: T, options: StorageOptions = {}): boolean {
     if (!this.isClient) {
       return false;
     }

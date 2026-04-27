@@ -7,7 +7,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
-import { apiClient } from "@/lib/apiClient";
+import apiClient from "@/lib/apiClient";
 import { Mail, MapPin, Phone } from "lucide-react";
 
 const contactSchema = z.object({
@@ -41,8 +41,9 @@ export default function ContactPage() {
       await apiClient.post("/contact", data);
       setIsSubmitted(true);
       reset();
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to send message. Please try again.");
+    } catch (err: unknown) {
+      const e = err as { response?: { data?: { message?: string } } };
+      setError(e.response?.data?.message || "Failed to send message. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -57,7 +58,7 @@ export default function ContactPage() {
           </div>
           <h1 className="text-2xl font-bold text-text mb-2">Message Sent!</h1>
           <p className="text-text-secondary mb-6">
-            Thank you for contacting us. We'll get back to you within 24 hours.
+            Thank you for contacting us. We&apos;ll get back to you within 24 hours.
           </p>
           <Button onClick={() => setIsSubmitted(false)} className="w-full">
             Send Another Message
@@ -73,7 +74,7 @@ export default function ContactPage() {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-text mb-4">Get in Touch</h1>
           <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-            Have questions about HubAssist? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            Have questions about HubAssist? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
           </p>
         </div>
 
@@ -135,8 +136,10 @@ export default function ContactPage() {
                   {...register("message")}
                   placeholder="Tell us more about your inquiry..."
                   rows={6}
-                  error={errors.message?.message}
                 />
+                {errors.message?.message && (
+                  <p className="mt-1 text-sm text-red-500">{errors.message.message}</p>
+                )}
               </div>
 
               <Button
@@ -202,7 +205,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h4 className="font-medium text-text mb-1">Do you offer demos?</h4>
-                  <p className="text-sm text-text-secondary">Yes! We'd be happy to show you HubAssist in action. Mention "demo" in your message.</p>
+                  <p className="text-sm text-text-secondary">Yes! We&apos;d be happy to show you HubAssist in action. Mention &quot;demo&quot; in your message.</p>
                 </div>
                 <div>
                   <h4 className="font-medium text-text mb-1">Need technical support?</h4>

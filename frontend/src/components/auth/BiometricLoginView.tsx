@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Fingerprint, AlertCircle } from "lucide-react";
 import { useAuthStore } from "@/lib/store/authStore";
-import { apiClient } from "@/lib/apiClient";
+import apiClient from "@/lib/apiClient";
 import { Button } from "@/components/ui/Button";
 
 interface BiometricLoginViewProps {
@@ -38,10 +38,11 @@ export function BiometricLoginView({ onSuccess, onFallback }: BiometricLoginView
         // Import dynamically to avoid SSR issues
         const { startAuthentication } = await import('@simplewebauthn/browser');
         credential = await startAuthentication(options);
-      } catch (authError: any) {
-        if (authError.name === "NotAllowedError") {
+      } catch (authError: unknown) {
+        const e = authError as { name?: string };
+        if (e.name === "NotAllowedError") {
           setError("Biometric authentication was cancelled or failed.");
-        } else if (authError.name === "NotSupportedError") {
+        } else if (e.name === "NotSupportedError") {
           setError("Biometric authentication is not supported on this device.");
           setIsSupported(false);
         } else {
@@ -67,10 +68,11 @@ export function BiometricLoginView({ onSuccess, onFallback }: BiometricLoginView
       if (typeof window !== "undefined") {
         window.location.href = "/dashboard";
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Biometric login error:", err);
+      const e = err as { response?: { data?: { message?: string } } };
       setError(
-        err.response?.data?.message || 
+        e.response?.data?.message || 
         "Biometric authentication failed. Please try again or use password login."
       );
     } finally {

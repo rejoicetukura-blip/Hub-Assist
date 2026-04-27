@@ -11,7 +11,7 @@ interface ErrorDetails {
   message: string;
   statusCode?: number;
   type: "api" | "axios" | "network" | "validation" | "unknown";
-  originalError?: any;
+  originalError?: unknown;
 }
 
 /**
