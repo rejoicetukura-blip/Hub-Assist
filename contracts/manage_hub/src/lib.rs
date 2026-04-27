@@ -15,6 +15,7 @@ mod pause_errors;
 mod guards;
 mod fractionalization;
 mod royalty;
+mod test;
 
 pub use attendance_log::{
     AttendanceAction, AttendanceLog, AttendanceLogModule, AttendanceLogModuleClient,
