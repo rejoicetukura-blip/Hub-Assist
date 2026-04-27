@@ -11,6 +11,17 @@
   --text-tertiary: #6b6b6b;
 }
 
+.dark {
+  --canvas: #1a1a1a;
+  --card: #2a2a2a;
+  --mint: #2d4a44;
+  --lavender: #2d3a49;
+  --sage: #3a4129;
+  --text: #f5f5f5;
+  --text-secondary: #d1d1d1;
+  --text-tertiary: #a1a1a1;
+}
+
 * {
   box-sizing: border-box;
 }
